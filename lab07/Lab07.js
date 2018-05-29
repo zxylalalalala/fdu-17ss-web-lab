@@ -4,51 +4,29 @@ let select1 = document.getElementById("select1");
 let select2 = document.getElementById("select2");
 let bt = document.getElementById("bt");
 let div1 = document.getElementById("div1");
+let div2 = document.getElementById("div2");
 let input1 = document.createElement("input");
 let input2 = document.createElement("input");
-let div2 = document.getElementById("div2");
 let table = document.getElementById("table");
+
 let tableName = [];
 let rowName = [];
 let rowAttr = [];
 let rowEle = [];
 let tableAttr = [];
 
-function createTable() {
-    div1.innerHTML = "";
-    div2.innerHTML = "";
-    div2.style.display = "block";
-    bt.style.display = "none";
-
-    input1.style.display = "inline";
-    input1.type = "text";
-    input1.value = "";
-    input1.placeholder = "Table Name";
-    input1.className = "input";
-
-    input2.style.display = "inline";
-    input2.type = "number";
-    input2.value = "";
-    input2.placeholder = "Columns Numbers";
-    input2.className = "input";
-
-    div1.appendChild(input1);
-    div1.appendChild(input2);
-}
-
-function getInput() {
-    div2.innerHTML = "";
-    col = input2.value;
-    for(let i = 0; i < col; i ++){
-        let t1 = document.createElement("input");
-        t1.type = "text";
-        t1.placeholder = "attribute";
-        t1.className = "input";
-        div2.appendChild(t1);
+function commit(){
+    if(select1.options[1].selected)
+        commitTable();
+    else if(select1.options[2].selected)
+        commitRow();
+    else if(select1.options[3].selected){
+        commitDR();
     }
-    bt.style.display = "block";
+    else if(select1.options[4].selected){
+        commitDT();
+    }
 }
-
 function commitTable() {
     table.innerHTML = "";
     let empty = false;
@@ -78,29 +56,6 @@ function commitTable() {
         rowName = [];
     }
 }
-
-function addRow() {
-    div1.innerHTML = "";
-    div2.innerHTML = "";
-    for(let i = 0;i < tableName.length;i ++){
-        if(select2.options[select2.selectedIndex].text === tableName[i]){
-            index = i;
-            input1.style.display = "inline-block";
-            input2.style.display = "inline-block";
-            for(let j= 0; j < tableAttr[index].children.length; j ++){
-                let t2 = document.createElement("input");
-                t2.type = "text";
-                t2.placeholder = tableAttr[i].children[j].innerHTML;
-                t2.className = "input";
-                div1.appendChild(t2);
-            }
-            input1.style.display = "none";
-            input2.style.display = "none";
-            div2.innerText = "";
-        }
-    }
-}
-
 function commitRow() {
     let empty = false;
     for(let x = 0;x < div1.children.length;x ++){
@@ -125,31 +80,10 @@ function commitRow() {
         }
     }
 }
-
-function deleteRow() {
-    for(let i = 0;i < tableName.length;i ++) {
-        if (select2.options[select2.selectedIndex].text === tableName[i]) {
-            index = i;
-            if (tableAttr[index].children.length !== undefined) {
-                div1.innerHTML = "";
-                div2.innerHTML = "";
-                for (let i = 0; i < tableAttr[index].children.length; i++) {
-                    let t3 = document.createElement("input");
-                    t3.type = "text";
-                    t3.placeholder = "attribute";
-                    t3.className = "input";
-                    div2.appendChild(t3);
-                }
-            }
-        }
-    }
-}
-
 function commitDR() {
     let num = 0;
     for(let i = 0; i < tableName.length; i ++) {
         if (tableName[i] === select2.options[select2.selectedIndex].text) {
-            // let n = 0;
             for (let j = 0; j < rowAttr[i].length; j++) {
                 num = 0;
                 for (let k = 0; k < tableAttr[index].children.length; k++) {
@@ -166,14 +100,6 @@ function commitDR() {
         }
     }
 }
-
-function deleteTable() {
-    alert("WARNING: You cannot undo this action!");
-    div1.innerHTML = "";
-    div2.innerHTML = "";
-    delete select2.innerText;
-}
-
 function commitDT() {
     for(let i = 0; i < tableName.length; i ++) {
         if (tableName[i] === select2.options[select2.selectedIndex].text) {
@@ -193,6 +119,92 @@ function commitDT() {
     changeS2Option();
 }
 
+function createTable() {
+    div1.innerHTML = "";
+    div2.innerHTML = "";
+    div2.style.display = "block";
+    bt.style.display = "none";
+
+    input1.style.display = "inline";
+    input1.type = "text";
+    input1.value = "";
+    input1.placeholder = "Table Name";
+    input1.className = "input";
+
+    input2.style.display = "inline";
+    input2.type = "number";
+    input2.value = "";
+    input2.placeholder = "Columns Numbers";
+    input2.className = "input";
+
+    div1.appendChild(input1);
+    div1.appendChild(input2);
+}
+function getInput() {
+    div2.innerHTML = "";
+    col = input2.value;
+    for(let i = 0; i < col; i ++){
+        let t1 = document.createElement("input");
+        t1.type = "text";
+        t1.placeholder = "attribute";
+        t1.className = "input";
+        div2.appendChild(t1);
+    }
+    bt.style.display = "block";
+}
+
+function addRow() {
+    div1.innerHTML = "";
+    div2.innerHTML = "";
+    for(let i = 0;i < tableName.length;i ++){
+        if(select2.options[select2.selectedIndex].text === tableName[i]){
+            index = i;
+            input1.style.display = "inline-block";
+            input2.style.display = "inline-block";
+            for(let j= 0; j < tableAttr[index].children.length; j ++){
+                let t2 = document.createElement("input");
+                t2.type = "text";
+                t2.placeholder = tableAttr[i].children[j].innerHTML;
+                t2.className = "input";
+                div1.appendChild(t2);
+            }
+            input1.style.display = "none";
+            input2.style.display = "none";
+            div2.innerText = "";
+        }
+    }
+}
+function deleteRow() {
+    for(let i = 0;i < tableName.length;i ++) {
+        if (select2.options[select2.selectedIndex].text === tableName[i]) {
+            index = i;
+            if (tableAttr[index].children.length !== undefined) {
+                div1.innerHTML = "";
+                div2.innerHTML = "";
+                for (let i = 0; i < tableAttr[index].children.length; i++) {
+                    let t3 = document.createElement("input");
+                    t3.type = "text";
+                    t3.placeholder = "attribute";
+                    t3.className = "input";
+                    div2.appendChild(t3);
+                }
+            }
+        }
+    }
+}
+
+
+function deleteTable() {
+    alert("WARNING: You cannot undo this action!");
+    div1.innerHTML = "";
+    div2.innerHTML = "";
+    delete select2.innerText;
+}
+
+function changeOption() {
+    changeS1Option();
+    changeS2Option();
+}
 function changeS1Option(){
     if(select1.options[0].selected){
         bt.style.display = "none";
@@ -237,25 +249,6 @@ function changeS2Option() {
         }
     }
 }
-
-function changeOption() {
-    changeS1Option();
-    changeS2Option();
-}
-
-function commit(){
-    if(select1.options[1].selected)
-        commitTable();
-    else if(select1.options[2].selected)
-        commitRow();
-    else if(select1.options[3].selected){
-        commitDR();
-    }
-    else if(select1.options[4].selected){
-        commitDT();
-    }
-}
-
 select1.addEventListener("change",changeOption,false);
 input2.addEventListener("change",getInput,false);
 bt.addEventListener("click",commit,false);
