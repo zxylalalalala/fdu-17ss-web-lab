@@ -3,7 +3,7 @@
 
 //****** Hint ******
 //connect database and fetch data here
-
+$x = new mysqli('localhost','root','','travel');
 
 ?>
 
@@ -44,6 +44,9 @@
                 <?php
                 //Fill this place
 
+                $continent = "SELECT * FROM Continents";
+                $result = $x->query($continent);
+
                 //****** Hint ******
                 //display the list of continents
 
@@ -58,6 +61,13 @@
                 <option value="0">Select Country</option>
                 <?php 
                 //Fill this place
+
+                $country = "SELECT * FROM Countries";
+                $result = $x ->query($country);
+                while ($col = $result->fetch_assoc()){
+                    echo '<option value=' . $col['ISO'] . '>' . $col['CountryName'] . '</option>';
+                }
+                ?>
 
                 //****** Hint ******
                 /* display list of countries */ 
@@ -75,6 +85,49 @@
 		<ul class="caption-style-2">
             <?php 
             //Fill this place
+
+            function loop($result){
+                while($row = mysqli_fetch_array($result)) {
+                    echo "<li>
+              <a href=\"detail.php?id=".$row['ImageID']."\" class=\"img-responsive\">
+                <img src=\"images/square-medium/".$row['Path']."\" alt=\"".$row['Title']."\">
+                <div class=\"caption\">
+                  <div class=\"blur\"></div>
+                  <div class=\"caption-text\">
+                    <p>".$row['Description']."</p>
+                  </div>
+                </div>
+              </a>
+            </li>";
+                }
+            }
+
+            $Continent = 0;
+            $Country = 0;
+            if(isset($_GET['country'])){
+                $Country = $_GET['country'];
+            }
+            if (isset($_GET['continent'])){
+                $Continent = $_GET['continent'];
+            }
+            if($Country != "0" & $Continent != "0"){
+                $result = mysqli_query($x, "SELECT * FROM ImageDetails WHERE ContinentCode='$Continent' AND CountryCodeISO='$Country'");
+
+            }
+            else{
+                if($Country != "0" ){
+                    $result = mysqli_query($x, "SELECT * FROM ImageDetails WHERE CountryCodeISO='$Country'");
+                    loop($result);
+                }
+                if($Continent != "0" ) {
+                    $result = mysqli_query($x, "SELECT * FROM ImageDetails WHERE ContinentCode='$Continent'");
+                    loop($result);
+                }
+                if($Country == "0" && $Continent == "0"){
+                    $result = mysqli_query($x, "SELECT * FROM ImageDetails WHERE ImageID!='0'");
+                    loop($result);
+                }
+            }
 
             //****** Hint ******
             /* use while loop to display images that meet requirements ... sample below ... replace ???? with field data
